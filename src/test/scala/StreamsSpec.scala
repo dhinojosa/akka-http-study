@@ -24,41 +24,4 @@ class StreamsSpec extends FunSuite with Matchers {
     source.runForeach(println)
   }
 
-
-  test("run with a flow and sink") {
-
-    def sink(fileName: String): Sink[String, Future[IOResult]] = {
-      Flow[String].map(x => ByteString(x + "\n")).toMat(FileIO.toPath(Paths.get(fileName)))(Keep.right)
-    }
-    //ActorSystem
-    implicit val actorSystem = ActorSystem.create("ActorSystem")
-
-    //Materializer
-    implicit val materializer = ActorMaterializer.apply()
-
-    //The second parameterized type is secondary information
-    val source: Source[Int, NotUsed] = Source(1 to 100)
-
-    val reduce: Future[Int] = source.map(_ + 1).filter(_ % 2 == 0).runReduce(_*_)
-
-    reduce.foreach(println)(actorSystem.dispatcher)
-  }
-
-
-  test("runWith which creates a Sink") {
-
-    def sink(fileName: String): Sink[String, Future[IOResult]] = {
-      Flow[String].map(x => ByteString(x + "\n")).toMat(FileIO.toPath(Paths.get(fileName)))(Keep.right)
-    }
-    //ActorSystem
-    implicit val actorSystem = ActorSystem.create("ActorSystem")
-
-    //Materializer
-    implicit val materializer = ActorMaterializer.apply()
-
-    //The second parameterized type is secondary information
-    val source: Source[Int, NotUsed] = Source(1 to 100)
-
-    val flow = Flow[Integer].map(_.toString)
-  }
 }
