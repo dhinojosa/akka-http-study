@@ -36,7 +36,7 @@ object BasicGetPostPutServer {
           val future = employeeActor ? number
 
           onSuccess(future) {
-            case Some(Employee(fn, ln)) => complete(s"${fn} ${ln}")
+            case Some(Employee(fn, ln)) => complete(s"$fn $ln")
             case None => complete(StatusCodes.NotFound)
           }
         } ~ put {
