@@ -23,8 +23,7 @@ object BasicGetPostServer {
     implicit val executionContext = system.dispatcher
     implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
-    implicit val requestFormDataToEmployeeMarshaller:
-    FromRequestUnmarshaller[Employee] =
+    implicit val requestFormDataToEmployeeMarshaller: FromRequestUnmarshaller[Employee] =
       implicitly[FromRequestUnmarshaller[FormData]]
       .map(fd => {
         val fields: Query = fd.fields

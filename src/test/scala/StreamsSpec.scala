@@ -10,8 +10,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
 class StreamsSpec extends FunSuite with Matchers {
-  test(
-    """can also have a Flow, which
+  test("""can also have a Flow, which
       |is just an interconnecting piece that can be reused""".stripMargin) {
 
     implicit val system = ActorSystem("MyActorSystem")
@@ -27,9 +26,7 @@ class StreamsSpec extends FunSuite with Matchers {
     }
 
     Source.fromFuture(future).via(flow).runForeach(println)
-
     Thread.sleep(2000)
-
     Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 }

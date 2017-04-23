@@ -4,13 +4,12 @@ import java.util.concurrent.TimeUnit
 
 import akka.NotUsed
 import akka.actor.ActorSystem
-import akka.http.scaladsl.Http.HostConnectionPool
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.stream.scaladsl.{Sink, Source}
 import akka.util.ByteString
 import org.scalatest.{FunSuite, Matchers}
-import spray.json.{DefaultJsonProtocol, PrettyPrinter}
+import spray.json.{DefaultJsonProtocol, PrettyPrinter, RootJsonFormat}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.{Duration, FiniteDuration}
@@ -59,9 +58,9 @@ class BasicClientSpec extends FunSuite with Matchers {
         .runWith(Sink.head)
 
     responseFuture.onSuccess {
-      case (Success(rs), uu) =>
+      case (Success(rs), _) =>
         println(rs.getHeaders())
-      case (Failure(e), uu) =>
+      case (Failure(e), _) =>
         e.printStackTrace()
     }
 
@@ -87,9 +86,9 @@ class BasicClientSpec extends FunSuite with Matchers {
         .runWith(Sink.head)
 
     responseFuture.onSuccess {
-      case (Success(rs), uu) =>
+      case (Success(rs), _: NotUsed) =>
         println(rs.getHeaders())
-      case (Failure(e), uu) =>
+      case (Failure(e), _:NotUsed) =>
         e.printStackTrace()
     }
 
@@ -126,12 +125,12 @@ class BasicClientSpec extends FunSuite with Matchers {
     implicit val executionContext = system.dispatcher
 
     trait PrettyJsonFormatSupport extends DefaultJsonProtocol with SprayJsonSupport {
-      implicit val prettyPrintedConditionFormat = jsonFormat4(Condition)
-      implicit val prettyPrintedItemFormat = jsonFormat1(Item)
-      implicit val prettyPrintedChannelFormat = jsonFormat1(Channel)
-      implicit val prettyPrintedResultsFormat = jsonFormat1(Results)
-      implicit val prettyPrintedQueryFormat = jsonFormat4(Query)
-      implicit val prettyPrintedRootFormat = jsonFormat1(Root)
+      implicit val prettyPrintedConditionFormat: RootJsonFormat[Condition] = jsonFormat4(Condition)
+      implicit val prettyPrintedItemFormat: RootJsonFormat[Item] = jsonFormat1(Item)
+      implicit val prettyPrintedChannelFormat: RootJsonFormat[Channel] = jsonFormat1(Channel)
+      implicit val prettyPrintedResultsFormat: RootJsonFormat[Results] = jsonFormat1(Results)
+      implicit val prettyPrintedQueryFormat: RootJsonFormat[Query] = jsonFormat4(Query)
+      implicit val prettyPrintedRootFormat: RootJsonFormat[Root] = jsonFormat1(Root)
       implicit val printer = PrettyPrinter
     }
 

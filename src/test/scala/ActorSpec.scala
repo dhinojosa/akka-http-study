@@ -7,13 +7,9 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class ActorSpec extends FunSuite with Matchers {
-  test(
-    """Testing a plain simple actor""".stripMargin) {
-
+  test("""Testing a plain simple actor""".stripMargin) {
     val system = ActorSystem("MyActorSystem")
-
-    val simpleActor = system.actorOf(Props[SimpleActor],
-                       "simpleActor")
+    val simpleActor = system.actorOf(Props[SimpleActor], "simpleActor")
     simpleActor ! "What's up?"
 
     Thread.sleep(2000)

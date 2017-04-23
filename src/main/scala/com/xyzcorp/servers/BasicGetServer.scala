@@ -22,19 +22,15 @@ object BasicGetServer {
 
     implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
-    system.actorOf(Props[EmployeeActor],
-      "EmployeeFinder")
+    system.actorOf(Props[EmployeeActor], "EmployeeFinder")
 
     val route =
       path("employee" / IntNumber) { number =>
         get {
-          val employeeFinder = system
-            .actorSelection("/user/EmployeeFinder")
+          val employeeFinder = system.actorSelection("/user/EmployeeFinder")
           val future = employeeFinder ? number
-
           onSuccess(future) {
-            case Some(Employee(fn, ln)) =>
-              complete(s"$fn $ln")
+            case Some(Employee(fn, ln)) => complete(s"$fn $ln")
             case None => complete(StatusCodes.NotFound)
           }
         }

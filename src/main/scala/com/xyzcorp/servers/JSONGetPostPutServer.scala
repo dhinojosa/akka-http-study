@@ -13,6 +13,7 @@ import akka.util.Timeout
 import com.xyzcorp.actors.EmployeeActor
 import com.xyzcorp.entities.Employee
 import spray.json.DefaultJsonProtocol._
+import spray.json.RootJsonFormat
 
 import scala.io.StdIn
 
@@ -23,7 +24,7 @@ object JSONGetPostPutServer {
     implicit val executionContext = system.dispatcher
     implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
-    implicit val employeeFormat = jsonFormat2(Employee)
+    implicit val employeeFormat: RootJsonFormat[Employee] = jsonFormat2(Employee)
 
     val employeeActor = system.actorOf(Props[EmployeeActor], "EmployeeFinder")
     val route =
