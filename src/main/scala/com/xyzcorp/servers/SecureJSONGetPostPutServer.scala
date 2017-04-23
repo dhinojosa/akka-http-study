@@ -26,15 +26,19 @@ object SecureJSONGetPostPutServer {
 
     implicit val employeeFormat = jsonFormat2(Employee)
 
-    def myUserPassAuthenticator(credentials: Credentials): Option[String] =
+    def myUserPassAuthenticator
+    (credentials: Credentials): Option[String] =
       credentials match {
-        case p@Credentials.Provided(id) if p.verify("AkkaTime") => Some(id)
+        case p@Credentials.Provided(id)
+          if p.verify("AkkaTime") => Some(id)
         case _ => None
       }
 
     val employeeActor = system.actorOf(Props[EmployeeActor], "EmployeeFinder")
+
     val route =
-      authenticateBasic(realm = "EvilRealm", myUserPassAuthenticator) { user =>
+      authenticateBasic(realm = "EvilRealm",
+        myUserPassAuthenticator) { user =>
         path("employee" / IntNumber) { number =>
           get {
             val future = employeeActor ? number
